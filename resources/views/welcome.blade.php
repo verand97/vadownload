@@ -1,195 +1,293 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>VADownload - Unduh Sesukamu</title>
+    <title>VADownload - Premium Media Downloader</title>
 
-    <!-- Google Fonts: Outfit -->
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS v4 CDN -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
     <!-- Script Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
 
-    <style>
-        /* Custom Glasses */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b1120;
+            color: #f8fafc;
         }
 
-        /* Animasi Latar Belakang */
-        @keyframes animateBg {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+        .glass-nav {
+            background: rgba(11, 17, 32, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .animated-bg {
-            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #172554);
-            background-size: 400% 400%;
-            animation: animateBg 15s ease infinite;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Animasi loading pulse */
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bg-mesh {
+            background-color: #0b1120;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.1) 0, transparent 50%);
+        }
+
         .loader {
-            border-top-color: #3b82f6;
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
+            border-top-color: #38bdf8;
+            animation: spinner 1s linear infinite;
         }
 
         @keyframes spinner {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-20px) scale(1.1); }
         }
     </style>
 </head>
 
-<body class="antialiased animated-bg text-gray-100 min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden">
+<body class="antialiased bg-mesh min-h-screen flex flex-col relative overflow-x-hidden selection:bg-indigo-500/30">
 
-    <!-- Ornamen Latar -->
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse transition-all"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000 transition-all"></div>
+    <!-- Decorative Blobs -->
+    <div class="blob bg-sky-600/30 w-96 h-96 rounded-full top-[-10%] left-[-10%]"></div>
+    <div class="blob bg-indigo-600/30 w-96 h-96 rounded-full bottom-[20%] right-[-10%] animation-delay-2000"></div>
 
-    <div class="z-10 w-full max-w-3xl glass-panel p-8 md:p-12 rounded-3xl shadow-2xl flex flex-col gap-8 transition-transform transform hover:scale-[1.01] duration-500 relative">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="w-10 h-10 rounded-xl bg-linear-to-tr from-sky-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i data-feather="download-cloud" class="text-white w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">VADownload</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-sm font-medium px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all border border-white/5 hover:border-white/20">
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Sign in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="text-sm font-medium px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-lg shadow-indigo-500/25">
+                                Get Started
+                            </a>
+                        @endif
+                    @endauth
+                @endif
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-32 pb-20 flex flex-col items-center justify-center relative z-10 px-4">
         
-        <!-- Logout Button -->
-        <div class="absolute top-4 right-6">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-sm font-semibold text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg">
-                    Logout ({{ Auth::user()->name ?? '' }})
+        <!-- Hero Section -->
+        <div class="text-center max-w-4xl mx-auto mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sky-400 text-sm font-medium mb-6">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                </span>
+                VADownload v2.0 is now live
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+                Download Media <br class="hidden md:block"/>
+                <span class="gradient-text">Without Limits.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 font-light max-w-2xl mx-auto">
+                The fastest, most reliable tool to download high-quality videos, audio, and images from your favorite social platforms instantly.
+            </p>
+        </div>
+
+        <!-- Download Card -->
+        <div class="w-full max-w-3xl glass-card p-2 md:p-3 rounded-[2rem] shadow-2xl shadow-black/50 mb-16">
+            <form id="downloadForm" class="flex flex-col sm:flex-row gap-2 relative">
+                <div class="relative w-full flex items-center">
+                    <div class="absolute left-6 text-slate-400">
+                        <i data-feather="link" class="w-5 h-5"></i>
+                    </div>
+                    <input type="url" id="mediaUrl" required
+                        placeholder="Paste your video or audio link here..."
+                        class="w-full pl-14 pr-6 py-5 bg-transparent text-white placeholder-slate-500 focus:outline-none text-lg">
+                </div>
+                <button type="submit" id="submitBtn" class="px-8 py-4 sm:py-0 bg-white text-slate-900 hover:bg-slate-200 font-semibold rounded-[1.5rem] shadow-lg transition-all duration-300 flex items-center justify-center min-w-[160px]">
+                    <span id="btnText">Extract</span>
+                    <div id="btnLoader" class="hidden ml-2 w-5 h-5 border-3 border-slate-900 border-t-transparent rounded-full loader"></div>
                 </button>
             </form>
         </div>
 
-        <!-- Header Section -->
-        <div class="text-center group cursor-default">
-            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-lg group-hover:from-pink-400 group-hover:to-blue-400 transition-all duration-700 ease-in-out">
-                VADownload
-            </h1>
-            <p class="mt-4 text-lg md:text-xl text-gray-300 font-light tracking-wide opacity-90">
-                Unduh Video, Audio, & Gambar dari IG, TikTok, YouTube dalam Sekejap.
-            </p>
-        </div>
-
-        <!-- Form Section -->
-        <form id="downloadForm" class="flex flex-col sm:flex-row gap-4 mt-4 relative">
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                    </svg>
-                </div>
-                <input type="url" id="mediaUrl" required
-                    placeholder="Tempel tautan video/audio di sini..."
-                    class="w-full pl-12 pr-4 py-4 md:py-5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all shadow-inner text-lg outline-none">
-            </div>
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="px-8 py-4 md:py-5 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center min-w-[150px] focus:ring-4 focus:ring-purple-500/50">
-                <span id="btnText">Unduh Sekarang</span>
-                <div id="btnLoader" class="hidden ml-2 w-5 h-5 border-4 border-white border-t-transparent rounded-full loader"></div>
-            </button>
-        </form>
-
         <!-- Error State -->
-        <div id="errorBox" class="hidden p-4 rounded-2xl bg-red-500/20 border border-red-500/50 text-red-200 text-center animate-fade-in text-sm font-medium">
-            <!-- Teks Error -->
+        <div id="errorBox" class="hidden w-full max-w-2xl mb-8 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-center animate-fade-in text-sm font-medium items-center justify-center gap-2">
+            <i data-feather="alert-circle" class="w-4 h-4"></i>
+            <span id="errorText"></span>
         </div>
 
         <!-- Result Section -->
-        <div id="resultBox" class="hidden flex-col gap-6 animate-fade-in mt-2 transition-all duration-500">
-            <h3 class="text-2xl font-semibold text-white/90 border-b border-white/10 pb-2">Hasil Unduhan</h3>
+        <div id="resultBox" class="hidden w-full max-w-4xl glass-card p-6 md:p-8 rounded-[2rem] mb-16 animate-fade-in transition-all duration-500">
+            <div class="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
+                <h3 class="text-xl font-semibold text-white">Extraction Ready</h3>
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+            </div>
 
-            <div class="flex flex-col md:flex-row gap-6 bg-white/5 p-4 rounded-2xl border border-white/10 relative overflow-hidden group">
-                <!-- Glow effect di belakang kartu hasil -->
-                <div class="absolute inset-0 bg-linear-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                <div class="w-full md:w-1/3 flex justify-center items-center bg-black/40 rounded-xl overflow-hidden shadow-inner aspect-video md:aspect-auto relative z-10 min-h-[160px]">
-                    <!-- Thumbnail Media -->
-                    <img id="mediaThumb" src="" alt="Thumbnail" class="w-full h-full object-cover hidden transition-transform duration-700 hover:scale-110">
-                    <div id="thumbPlaceholder" class="text-gray-500">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Media Preview -->
+                <div class="w-full md:w-5/12 bg-slate-900/50 rounded-2xl overflow-hidden shadow-inner aspect-video md:aspect-[4/5] relative group flex items-center justify-center border border-white/5">
+                    <img id="mediaThumb" src="" alt="Thumbnail" class="w-full h-full object-cover hidden transition-transform duration-700 group-hover:scale-105">
+                    <div id="thumbPlaceholder" class="text-slate-600 flex flex-col items-center gap-3">
+                        <i data-feather="image" class="w-12 h-12"></i>
+                        <span class="text-sm font-medium">No Preview</span>
                     </div>
                 </div>
 
-                <!-- Detail Media -->
-                <div class="w-full md:w-2/3 flex flex-col justify-center space-y-4 relative z-10">
-                    <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wider">
-                        <span id="mediaSource" class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">Sumber</span>
-                        <span id="mediaType" class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full border border-purple-500/30 text-xs font-semibold">Tipe</span>
+                <!-- Action Buttons -->
+                <div class="w-full md:w-7/12 flex flex-col justify-center space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center border border-white/10">
+                            <i data-feather="info" class="w-4 h-4 text-sky-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400">Source Platform</p>
+                            <p id="mediaSource" class="font-semibold text-white">Unknown</p>
+                        </div>
                     </div>
 
-                    <div class="space-y-3">
-                        <!-- Link Download Video (Jika ada) -->
-                        <a id="btnDownloadVideo" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-between w-full px-5 py-3 bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-medium rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                            <span>Unduh Video (Kualitas Terbaik)</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
+                    <div class="space-y-3 pt-4 border-t border-white/5">
+                        <a id="btnDownloadVideo" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-center gap-2 w-full px-6 py-4 bg-linear-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <i data-feather="video" class="w-5 h-5"></i>
+                            <span>Download High Quality</span>
                         </a>
 
-                        <!-- Link Download Audio (Jika ada) -->
-                        <a id="btnDownloadAudio" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-between w-full px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-xl transition-all duration-300 transform hover:-translate-y-1">
-                            <span>Unduh Audio (MP3)</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-                            </svg>
+                        <a id="btnDownloadAudio" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-center gap-2 w-full px-6 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium rounded-xl transition-all duration-300">
+                            <i data-feather="music" class="w-5 h-5"></i>
+                            <span>Download Audio Only</span>
                         </a>
-
-                        <!-- Jika hasil bentuk file gambar galeri dll didukung (Misal IG Carousel) -->
-                        <p id="extraNotice" class="text-xs text-gray-400 italic hidden">Saran: Klik kanan pada pratinjau dan pilih "Simpan Gambar" jika media berupa gambar.</p>
+                        
+                        <p id="extraNotice" class="text-xs text-slate-500 text-center mt-4 hidden">
+                            <i data-feather="info" class="w-3 h-3 inline mr-1"></i> Tip: Right-click preview to save images directly.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="mt-4 text-center text-sm text-gray-400/80">
-            <p>Dilengkapi desain antarmuka modern yang dibuat dengan ❤ untuk pengalaman mengunduh terbaik.</p>
-            <p class="mt-1 text-xs">Aplikasi ini menggunakan public API untuk merender respons. Kami tidak menyimpan media apa pun.</p>
+        <!-- Supported Platforms -->
+        <div class="w-full max-w-5xl mx-auto mt-10 text-center">
+            <p class="text-sm font-medium text-slate-500 uppercase tracking-widest mb-8">Supported Platforms</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <div class="flex items-center gap-2 font-bold text-xl"><i data-feather="youtube"></i> YouTube</div>
+                <div class="flex items-center gap-2 font-bold text-xl"><i data-feather="instagram"></i> Instagram</div>
+                <div class="flex items-center gap-2 font-bold text-xl"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg> TikTok</div>
+                <div class="flex items-center gap-2 font-bold text-xl"><i data-feather="twitter"></i> Twitter/X</div>
+            </div>
         </div>
 
-    </div>
+        <!-- Features Section -->
+        <div class="w-full max-w-6xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-3xl">
+                <div class="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-400 mb-6">
+                    <i data-feather="zap"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">Lightning Fast</h4>
+                <p class="text-slate-400 leading-relaxed">Our advanced extraction servers process your requests in milliseconds, delivering the media you need without the wait.</p>
+            </div>
+            
+            <div class="glass-card p-8 rounded-3xl border-indigo-500/30 shadow-indigo-500/10">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-6">
+                    <i data-feather="shield"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">100% Secure & Private</h4>
+                <p class="text-slate-400 leading-relaxed">We respect your privacy. No downloaded files are logged or stored on our servers, ensuring complete anonymity.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl">
+                <div class="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-400 mb-6">
+                    <i data-feather="star"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">No Watermarks</h4>
+                <p class="text-slate-400 leading-relaxed">Get the original quality exactly as intended. Download content cleanly without any intrusive logos or watermarks.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-8 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between text-slate-500 text-sm">
+            <p>&copy; {{ date('Y') }} VADownload. All rights reserved.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-white transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Logika UI Frontend & Axios Fetch
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Frontend Logic & Axios Fetch
         const form = document.getElementById('downloadForm');
         const mediaUrl = document.getElementById('mediaUrl');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = document.getElementById('btnText');
         const btnLoader = document.getElementById('btnLoader');
         const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
         const resultBox = document.getElementById('resultBox');
 
-        // Konfigurasi Axios CSRF
+        // Axios CSRF config
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        // Elemen-elemen Box Hasil
+        // Result Box Elements
         const mediaThumb = document.getElementById('mediaThumb');
         const thumbPlaceholder = document.getElementById('thumbPlaceholder');
         const mediaSource = document.getElementById('mediaSource');
@@ -202,13 +300,15 @@
 
             // Reset states
             errorBox.classList.add('hidden');
+            errorBox.classList.remove('flex');
             resultBox.classList.add('hidden');
+            resultBox.classList.remove('opacity-100');
 
             // Set loading state
-            btnText.innerText = "Memproses...";
+            btnText.innerText = "Processing";
             btnLoader.classList.remove('hidden');
             submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
 
             try {
                 const response = await axios.post('/api/download', {
@@ -220,29 +320,23 @@
                 if (resData.success) {
                     renderResult(resData.data);
                 } else {
-                    showError(resData.message || 'Gagal memproses tautan, pastikan URL tersebut didukung.');
+                    showError(resData.message || 'Failed to process link. Please ensure the URL is supported.');
                 }
             } catch (err) {
-                const errMsg = err.response?.data?.message || err.response?.data?.error?.text || 'Terjadi kesalahan sistem atau URL tidak didukung!';
+                const errMsg = err.response?.data?.message || err.response?.data?.error?.text || 'System error or unsupported URL!';
                 showError(errMsg);
             } finally {
                 // Reset loading state
-                btnText.innerText = "Unduh Sekarang";
+                btnText.innerText = "Extract";
                 btnLoader.classList.add('hidden');
                 submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
             }
         });
 
         function renderResult(data) {
-            // Cobalt responses structure:
-            // status: "redirect" / "stream" / "success" / "picker"
-            // url: string
-            console.log(data); // for debug
-
-            // Menentukan platform dari input URL basic string
             let urlStr = mediaUrl.value.toLowerCase();
-            let platformName = "Platform";
+            let platformName = "Other Platform";
             if (urlStr.includes('youtube.com') || urlStr.includes('youtu.be')) platformName = "YouTube";
             else if (urlStr.includes('tiktok.com')) platformName = "TikTok";
             else if (urlStr.includes('instagram.com')) platformName = "Instagram";
@@ -260,15 +354,11 @@
             btnDownloadVideo.href = "#";
             btnDownloadAudio.href = "#";
 
-            // Cobalt API V10 mengembalikan data.url untuk video utama. 
-            // Jika itu carousel / picker, mengembalikan data.picker
-
             if (data.url) {
                 btnDownloadVideo.href = data.url;
                 btnDownloadVideo.classList.remove('hidden');
                 btnDownloadVideo.classList.add('flex');
 
-                // Set nama file download jika API menyediakannya (Ryzendesu title feature)
                 if (data.filenamePattern) {
                     btnDownloadVideo.setAttribute('download', data.filenamePattern + '.mp4');
                 } else {
@@ -276,7 +366,6 @@
                 }
             }
 
-            // Thumbnail / Poster (Opsional karena beberapa API eksternal tidak memberikan thumbnail langsung di endpoint dasar)
             const thumbUrl = data.thumbnail || data.poster || null;
 
             if (thumbUrl) {
@@ -288,21 +377,26 @@
                 thumbPlaceholder.classList.remove('hidden');
             }
 
-            form.reset();
+            // form.reset(); // User might want to see the link they just pasted, so comment this out
             resultBox.classList.remove('hidden');
+            
+            // Fade in effect
+            setTimeout(() => {
+                resultBox.classList.add('opacity-100');
+            }, 50);
 
-            // Smooth scroll down ke result area
+            // Smooth scroll down to result area
             resultBox.scrollIntoView({
                 behavior: 'smooth',
-                block: 'nearest'
+                block: 'center'
             });
         }
 
         function showError(msg) {
-            errorBox.innerText = `Error: ${msg}`;
+            errorText.innerText = msg;
             errorBox.classList.remove('hidden');
+            errorBox.classList.add('flex');
         }
     </script>
 </body>
-
 </html>
