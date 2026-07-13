@@ -6,14 +6,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DownloadController;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('welcome');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::post('/api/download', [DownloadController::class, 'download'])->middleware('auth');
+Route::post('/api/download', [DownloadController::class, 'download']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
