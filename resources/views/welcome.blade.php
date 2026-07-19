@@ -102,6 +102,14 @@
                 <span class="text-xl font-bold tracking-tight text-white">VADownload</span>
             </div>
             
+            <!-- Center Navigation Links -->
+            <div class="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+                <a href="#home" class="text-sm font-medium text-white hover:text-sky-400 transition-colors">Home</a>
+                <a href="#features" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Features</a>
+                <a href="#pricing" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Pricing</a>
+                <a href="#faq" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">FAQ</a>
+            </div>
+            
             @if (Route::has('login'))
                 <div class="flex items-center gap-4">
                     @auth
@@ -131,7 +139,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow pt-32 pb-20 flex flex-col items-center justify-center relative z-10 px-4">
+    <main id="home" class="flex-grow pt-32 pb-20 flex flex-col items-center justify-center relative z-10 px-4">
         
         <!-- Hero Section -->
         <div class="text-center max-w-4xl mx-auto mb-12">
@@ -238,7 +246,7 @@
         </div>
 
         <!-- Features Section -->
-        <div class="w-full max-w-6xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div id="features" class="w-full max-w-6xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 scroll-mt-24">
             <div class="glass-card p-8 rounded-3xl">
                 <div class="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-400 mb-6">
                     <i data-feather="zap"></i>
@@ -261,6 +269,105 @@
                 </div>
                 <h4 class="text-xl font-bold mb-3">No Watermarks</h4>
                 <p class="text-slate-400 leading-relaxed">Get the original quality exactly as intended. Download content cleanly without any intrusive logos or watermarks.</p>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <div id="pricing" class="w-full max-w-6xl mx-auto mt-32 scroll-mt-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Simple, transparent pricing</h2>
+                <p class="text-slate-400 text-lg">Choose the perfect plan for your downloading needs.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Basic Plan -->
+                <div class="glass-card p-8 rounded-[2rem] border border-white/5 hover:border-sky-500/30 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-linear-to-b from-sky-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-semibold text-white mb-2">Free Plan</h3>
+                        <div class="flex items-end gap-2 mb-6">
+                            <span class="text-4xl font-bold text-white">$0</span>
+                            <span class="text-slate-400 mb-1">/ forever</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Standard download speed</li>
+                            <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Up to 720p resolution</li>
+                            <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Supported platforms</li>
+                            <li class="flex items-center gap-3 text-slate-500"><i data-feather="x" class="w-5 h-5"></i> <del>Batch downloading</del></li>
+                            <li class="flex items-center gap-3 text-slate-500"><i data-feather="x" class="w-5 h-5"></i> <del>Priority support</del></li>
+                        </ul>
+                        <button class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-medium transition-colors border border-white/10">Current Plan</button>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="glass-card p-8 rounded-[2rem] border border-indigo-500/50 relative overflow-hidden transform md:-translate-y-4 shadow-2xl shadow-indigo-500/10">
+                    <div class="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-sky-400 to-indigo-500"></div>
+                    <div class="absolute top-6 right-6">
+                        <span class="px-3 py-1 text-xs font-semibold tracking-wider text-indigo-300 bg-indigo-500/20 rounded-full uppercase">Most Popular</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Pro Plan</h3>
+                    <div class="flex items-end gap-2 mb-6">
+                        <span class="text-4xl font-bold text-white">$4.99</span>
+                        <span class="text-slate-400 mb-1">/ month</span>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Maximum download speed</li>
+                        <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Up to 4K / 8K resolution</li>
+                        <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Audio extraction (320kbps)</li>
+                        <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> Batch downloading</li>
+                        <li class="flex items-center gap-3 text-slate-300"><i data-feather="check" class="w-5 h-5 text-emerald-400"></i> 24/7 Priority support</li>
+                    </ul>
+                    <button class="w-full py-3 rounded-xl bg-linear-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold transition-all shadow-lg transform hover:-translate-y-1">Upgrade to Pro</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div id="faq" class="w-full max-w-3xl mx-auto mt-32 mb-10 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="space-y-4" x-data="{ active: null }">
+                <!-- FAQ Item 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/5 transition-all">
+                    <button @click="active !== 1 ? active = 1 : active = null" class="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="font-medium text-white text-lg">Is it safe to download videos here?</span>
+                        <i data-feather="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300" :class="{'rotate-180': active === 1}"></i>
+                    </button>
+                    <div x-show="active === 1" x-collapse x-cloak style="display: none;">
+                        <div class="px-6 pb-5 text-slate-400 leading-relaxed">
+                            Yes, absolutely. We do not store any logs of your downloads, and all processing is done securely. We also don't require you to install any suspicious browser extensions or software.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/5 transition-all">
+                    <button @click="active !== 2 ? active = 2 : active = null" class="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="font-medium text-white text-lg">Why did my download link fail?</span>
+                        <i data-feather="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300" :class="{'rotate-180': active === 2}"></i>
+                    </button>
+                    <div x-show="active === 2" x-collapse x-cloak style="display: none;">
+                        <div class="px-6 pb-5 text-slate-400 leading-relaxed">
+                            This usually happens if the video is private, deleted, or from an unsupported platform. Please make sure the post is public and accessible without logging into the platform.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/5 transition-all">
+                    <button @click="active !== 3 ? active = 3 : active = null" class="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none">
+                        <span class="font-medium text-white text-lg">Can I download audio only?</span>
+                        <i data-feather="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300" :class="{'rotate-180': active === 3}"></i>
+                    </button>
+                    <div x-show="active === 3" x-collapse x-cloak style="display: none;">
+                        <div class="px-6 pb-5 text-slate-400 leading-relaxed">
+                            Yes! Once the video is processed, our system will provide a dedicated "Download Audio Only" button alongside the video download option.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
