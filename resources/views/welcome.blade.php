@@ -99,7 +99,31 @@
                 <span class="text-xl font-bold tracking-tight text-white">VADownload</span>
             </div>
             
-            <!-- Auth Links Removed -->
+            @if (Route::has('login'))
+                <div class="flex items-center gap-4">
+                    @auth
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center gap-2 px-4 py-2 rounded-full glass-card hover:bg-white/10 transition-colors">
+                                <span class="text-sm font-medium text-white">{{ Auth::user()->name }}</span>
+                                <i data-feather="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                            </button>
+                            
+                            <div x-show="open" @click.away="open = false" style="display: none;" class="absolute right-0 mt-2 w-48 rounded-xl glass-card py-2 shadow-xl border border-white/10">
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 transition-colors">Profile</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors">Log Out</button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="text-sm font-medium px-5 py-2 rounded-full bg-white text-slate-900 hover:bg-slate-200 transition-colors">Sign up</a>
+                        @endif
+                    @endauth
+                </div>
+            @endif
         </div>
     </nav>
 
